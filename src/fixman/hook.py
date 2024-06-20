@@ -6,9 +6,10 @@ from loggerman import logger
 import pyserials
 from markitup import html, md, sgr
 import gittidy
+import pyshellman as _pyshellman
 
-from repodynamics import shell
-from repodynamics import exception as _exception
+# from repodynamics import shell
+# from repodynamics import exception as _exception
 
 
 @logger.sectioner("Run Hooks")
@@ -37,8 +38,12 @@ def run(
         logger.critical(
             f"Argument 'ref_range' must be a list or tuple of two strings, but got {ref_range}."
         )
-    version_result = shell.run(
-        command=["pre-commit", "--version"], raise_execution=False, raise_exit_code=False
+    version_result = _pyshellman.run(
+        command=["pre-commit", "--version"],
+        raise_execution=False,
+        raise_exit_code=False,
+        raise_stderr=False,
+        text_output=True,
     )
     if not version_result.succeeded:
         logger.critical("pre-commit is not installed.")
@@ -170,13 +175,13 @@ class PreCommitHooks:
         shell_output = self._run_shell()
         if validation_run:
             self.remove_temp_config_file()
-        results = self._process_output(shell_output)
+        results = _process_shell_output(shell_output)
         output, result_line, details = self._process_results(results, validation_run=validation_run)
         return output, result_line, details
 
     @logger.sectioner("Run Pre-Commit")
     def _run_shell(self) -> str:
-        result = shell.run(command=self._command, cwd=self._path_root, raise_exit_code=False)
+        result = _pyshellman.run(command=self._command, cwd=self._path_root, raise_exit_code=False)
         error_intro = "An unexpected error occurred while running pre-commit hooks: "
         if result.error:
             self.remove_temp_config_file()

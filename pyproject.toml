@@ -17,13 +17,14 @@ namespaces = true
 # ----------------------------------------- Project Metadata -------------------------------------
 #
 [project]
-version = "0.0.0.dev246"
+version = "0.0.0.dev247"
 name = "FixMan"
 dependencies = [
     "pre-commit == 3.3.3",
     "gittidy",
     "markitup",
     "loggerman",
-    "pyserials"
+    "pyserials",
+    "PyShellMan",
 ]
 requires-python = ">=3.10"
