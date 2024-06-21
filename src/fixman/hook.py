@@ -109,11 +109,11 @@ class PreCommitHooks:
             return path, temp
         temp = True
         path = self._path_root.parent / ".__temporary_pre_commit_config__.yaml"
+        config = (
+            config if isinstance(config, str)
+            else pyserials.write.to_yaml_string(data=config, end_of_file_newline=True)
+        )
         with open(path, "w") as f:
-            config = (
-                config if isinstance(config, str)
-                else pyserials.write.to_yaml_string(data=config, end_of_file_newline=True)
-            )
             f.write(config)
         logger.info(code_title="Create temporary config file", code=path)
         logger.debug(code_title="Config file content", code=config)
@@ -121,7 +121,7 @@ class PreCommitHooks:
 
     def remove_temp_config_file(self):
         if self._config_file_is_temp:
-            self._config_filepath.unlink()
+            self._config_filepath.unlink(missing_ok=True)
             logger.info("Remove temporary pre-commit config file")
         return
 
